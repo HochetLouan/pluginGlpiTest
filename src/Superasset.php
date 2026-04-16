@@ -67,6 +67,7 @@ class Superasset extends CommonDBTM
     {
         $tabs = [];
         $this->addDefaultFormTab($tabs)
+            ->addStandardTab(Superasset_Item::class, $tabs, $options)
             ->addStandardTab(Notepad::class, $tabs, $options)
             ->addStandardTab(Log::class, $tabs, $options);
 
