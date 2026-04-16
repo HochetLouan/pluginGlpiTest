@@ -2,12 +2,15 @@
 namespace GlpiPlugin\Test;
 
 use CommonDBTM;
+use Notepad;
+use Log;
 use Glpi\Application\View\TemplateRenderer;
 
 class Superasset extends CommonDBTM
 {
     // right management, we'll change this later
     static $rightname = 'computer';
+    public $dohistory = true;
 
     /**
      *  Name of the itemtype
@@ -58,5 +61,15 @@ class Superasset extends CommonDBTM
         ];
 
         return $menu;
+    }
+
+    function defineTabs($options = [])
+    {
+        $tabs = [];
+        $this->addDefaultFormTab($tabs)
+            ->addStandardTab(Notepad::class, $tabs, $options)
+            ->addStandardTab(Log::class, $tabs, $options);
+
+        return $tabs;
     }
 }
