@@ -3,6 +3,7 @@
 
 use DBConnection;
 use GlpiPlugin\Test\Superasset;
+use GlpiPlugin\Test\Superasset_Item;
 use Migration;
 
 
@@ -21,15 +22,30 @@ function plugin_test_install(): bool
     if (!$DB->tableExists($table)) {
         //table creation query
         $query = "CREATE TABLE `$table` (
-                  `id`         int unsigned NOT NULL AUTO_INCREMENT,
-                  `is_deleted` TINYINT NOT NULL DEFAULT '0',
-                  `name`      VARCHAR(255) NOT NULL,
-                  PRIMARY KEY  (`id`)
+                    `id`         int unsigned NOT NULL AUTO_INCREMENT,
+                    `is_deleted` TINYINT NOT NULL DEFAULT '0',
+                    `name`      VARCHAR(255) NOT NULL,
+                    PRIMARY KEY  (`id`)
                  ) ENGINE=InnoDB
                  DEFAULT CHARSET={$default_charset}
                  COLLATE={$default_collation}";
         $DB->doQuery($query);
     }
+
+    $table = Superasset_Item::getTable();
+    if (!$DB->tableExists($table)) {
+        $query = "CREATE TABLE `$table` (
+                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `plugin_test_superassets_id` INT(11) NOT NULL DEFAULT '0',
+                    `itemtype` VARCHAR(100) NOT NULL,
+                    `items_id` INT(11) NOT NULL DEFAULT '0',
+                    PRIMARY KEY  (`id`)
+                 ) ENGINE=InnoDB
+                 DEFAULT CHARSET={$default_charset}
+                 COLLATE={$default_collation}";
+        $DB->doQuery($query);
+    }
+    //die($table);
 
     //execute the whole migration
     $migration->executeMigration();
@@ -43,6 +59,7 @@ function plugin_test_uninstall(): bool
 
     $tables = [
         Superasset::getTable(),
+        Superasset_Item::getTable(),
     ];
 
     foreach ($tables as $table) {

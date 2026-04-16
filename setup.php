@@ -32,6 +32,7 @@
  */
 
 use GlpiPlugin\Test\Superasset;
+use GlpiPlugin\Test\Superasset_Item;
 
 /** @phpstan-ignore theCodingMachineSafe.function (safe to assume this isn't already defined) */
 define('PLUGIN_TEST_VERSION', '1.00');
@@ -53,6 +54,9 @@ function plugin_init_test(): void {
     $PLUGIN_HOOKS['csrf_compliant']['test'] = true;
 
     \Plugin::registerClass(Superasset::class);
+    Plugin::registerClass(GlpiPlugin\Test\Superasset_Item::class, [
+        'addtabon' => Computer::class
+    ]);
 
     $PLUGIN_HOOKS['menu_toadd']['test'] = [
         // insert into 'plugin menu'
