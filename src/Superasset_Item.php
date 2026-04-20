@@ -6,25 +6,33 @@ use CommonDBRelation;
 use CommonGLPI;
 use Computer;
 use Glpi\Application\View\TemplateRenderer;
-use GlpiPlugin\Test\Superasset;
 
 class Superasset_Item extends CommonDBRelation
 {
-
-    static public $itemtype_primary = 'plugin_test_superassets_id';
+    // Définition précise des relations pour CommonDBRelation
+    static public $itemtype_primary   = Superasset::class;
+    static public $items_id_primary   = 'plugin_test_superassets_id';
     static public $itemtype_secondary = 'itemtype';
     static public $items_id_secondary = 'items_id';
+
     /**
-     * Tabs title
+     * Indique à GLPI de vérifier les droits sur l'objet parent
      */
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    static public $checkItem_id_primary = 'plugin_test_superassets_id';
+
+    public static function getTypeName($nb = 0)
+    {
+        return __('Associated Items', 'test');
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case Superasset::class:
                 $nb = countElementsInTable(self::getTable(), [
                     'plugin_test_superassets_id' => $item->getID()
                 ]);
-                return self::createTabEntry(__('Associated Items', 'test'), $nb);
+                return self::createTabEntry(self::getTypeName($nb), $nb);
 
             case Computer::class:
                 $nb = countElementsInTable(self::getTable(), [
@@ -36,8 +44,7 @@ class Superasset_Item extends CommonDBRelation
         return '';
     }
 
-    
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == Superasset::class) {
             self::showForSuperasset($item);
@@ -47,18 +54,25 @@ class Superasset_Item extends CommonDBRelation
         return true;
     }
 
-    /**
-     * Specific function for display only items of Superasset
-     */
-    static function showForSuperasset(Superasset $superasset, $withtemplate = 0)
+    public static function showForSuperasset(Superasset $superasset)
     {
+        Computer::dropdown(['name' => 'items_id']);
+        global $DB;
+
+        // Utilisation de request() au lieu de getIterator()
+        $iterator = $DB->request(self::getTable(), [
+            'WHERE' => ['plugin_test_superassets_id' => $superasset->getID()]
+        ]);
+
         TemplateRenderer::getInstance()->display('@test/superasset_item.html.twig', [
             'superasset' => $superasset,
-            'items'      => getAllDataFromTable(self::getTable(), ['plugin_test_superassets_id' => $superasset->getID()])
+            'items'      => iterator_to_array($iterator),
         ]);
     }
 
-    static function showForComputer(Computer $computer) {
-        echo "Contenu de l'onglet sur le PC"; 
+    public static function showForComputer(Computer $computer)
+    {
+        echo "<h3>Superassets liés</h3>";
+        // Optionnel : Ajoutez ici une logique de liste simple pour tester
     }
 }

@@ -1,6 +1,5 @@
 <?php
 use GlpiPlugin\Test\Superasset;
-use Html;
 
 include ('../../../inc/includes.php');
 
@@ -31,6 +30,7 @@ if (isset($_POST["add"])) {
     \Html::back();
     
 }else if (isset($_POST["add_item"])) {
+    var_dump($_POST); die();
     $item_link = new \GlpiPlugin\Test\Superasset_Item();
     $item_link->add([
         'plugin_test_superassets_id' => $_POST['plugin_test_superassets_id'],
