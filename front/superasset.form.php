@@ -29,6 +29,17 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
     $supperasset->update($_POST);
     \Html::back();
+    
+}else if (isset($_POST["add_item"])) {
+    $item_link = new \GlpiPlugin\Test\Superasset_Item();
+    $item_link->add([
+        'plugin_test_superassets_id' => $_POST['plugin_test_superassets_id'],
+        'itemtype'                   => 'Computer',
+        'items_id'                   => $_POST['items_id']
+    ]);
+    
+    // On retourne sur la fiche du Superasset
+    Html::back();
 
 } else {
     // fill id, if missing

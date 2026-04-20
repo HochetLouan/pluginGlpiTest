@@ -1,3 +1,24 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{# Formulaire pour ajouter un ordinateur #}
+<form action="{{ path('plugins/test/front/superasset.form.php') }}" method="post">
+    <input type="hidden" name="plugin_test_superassets_id" value="{{ superasset.fields['id'] }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
 
-example content
+    {{ fields.dropdownField(
+        'Computer',
+        'items_id',
+        '',
+        __('Add a computer', 'test')
+    ) }}
+
+    <input type="submit" name="add_item" value="{{ _x('button', 'Add') }}" class="btn btn-primary">
+</form>
+
+<hr>
+
+{# Liste des items déjà liés (optionnel pour l'exercice mais recommandé) #}
+<h3>{{ __('Linked Computers', 'test') }}</h3>
+<ul>
+    {% for item in items %}
+        <li>Computer ID: {{ item.items_id }}</li>
+    {% endfor %}
+</ul>
