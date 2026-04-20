@@ -73,4 +73,6 @@ class Superasset extends CommonDBTM
 
         return $tabs;
     }
+
+    
 }
