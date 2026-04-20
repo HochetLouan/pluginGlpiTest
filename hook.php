@@ -1,10 +1,8 @@
 <?php
 
 
-use DBConnection;
 use GlpiPlugin\Test\Superasset;
 use GlpiPlugin\Test\Superasset_Item;
-use Migration;
 
 
 function plugin_test_install(): bool
@@ -71,4 +69,32 @@ function plugin_test_uninstall(): bool
         }
     }
     return true;
+}
+
+
+function plugin_test_getAddSearchOptionsNew($itemtype)
+{
+    $sopt = [];
+
+    if ($itemtype == 'Computer') {
+        $sopt[] = [
+            'id'           => 12345,
+            'table'        => Superasset::getTable(),
+            'field'        => 'name',
+            'name'         => __('Associated Superassets', 'test'),
+            'datatype'     => 'itemlink',
+            'forcegroupby' => true,
+            'usehaving'    => true,
+            'joinparams'   => [
+                'beforejoin' => [
+                    'table'      => Superasset_Item::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'itemtype_item',
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    return $sopt;
 }

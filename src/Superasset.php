@@ -74,7 +74,7 @@ class Superasset extends CommonDBTM
         return $tabs;
     }
 
-    public function display($options = []) {
+    /* public function display($options = []) {
         global $DB;
 
         // 1. On récupère les données de l'objet actuel s'il existe
@@ -103,46 +103,46 @@ class Superasset extends CommonDBTM
             'item'   => $this,
             'computers' => $associated_computers
         ]);
-    }
+    } */
 
 
-    function rawSearchOptions()
-    {
-        $options = [];
+    // function rawSearchOptions()
+    // {
+    //     $options = [];
 
-        $options[] = [
-            'id'   => 'common',
-            'name' => __('Characteristics')
-        ];
+    //     $options[] = [
+    //         'id'   => 'common',
+    //         'name' => __('Characteristics')
+    //     ];
 
-        $options[] = [
-            'id'    => 1,
-            'table' => self::getTable(),
-            'field' => 'name',
-            'name'  => __('Name'),
-            'datatype' => 'itemlink'
-        ];
+    //     $options[] = [
+    //         'id'    => 1,
+    //         'table' => self::getTable(),
+    //         'field' => 'name',
+    //         'name'  => __('Name'),
+    //         'datatype' => 'itemlink'
+    //     ];
 
-        $options[] = [
-            'id'    => 2,
-            'table' => self::getTable(),
-            'field' => 'id',
-            'name'  => __('ID')
-        ];
+    //     $options[] = [
+    //         'id'    => 2,
+    //         'table' => self::getTable(),
+    //         'field' => 'id',
+    //         'name'  => __('ID')
+    //     ];
 
-        $options[] = [
-            'id'           => 3,
-            'table'        => Superasset_Item::getTable(),
-            'field'        => 'id',
-            'name'         => __('Number of associated assets', 'test'),
-            'datatype'     => 'count',
-            'forcegroupby' => true,
-            'usehaving'    => true,
-            'joinparams'   => [
-                'jointype' => 'child',
-            ]
-        ];
+    //     // $options[] = [
+    //     //     'id'           => 3,
+    //     //     'table'        => Superasset_Item::getTable(),
+    //     //     'field'        => 'id',
+    //     //     'name'         => __('Number of associated assets', 'test'),
+    //     //     'datatype'     => 'count',
+    //     //     'forcegroupby' => true,
+    //     //     'usehaving'    => true,
+    //     //     'joinparams'   => [
+    //     //         'jointype' => 'child',
+    //     //     ]
+    //     // ];
 
-        return $options;
-    }
+    //     return $options;
+    // }
 }

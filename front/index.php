@@ -14,5 +14,12 @@ echo "<h1>Bienvenue dans mon plugin 🚀</h1>";
 echo "<p>Ceci est une page simple.</p>";
 echo "</div>";
 
+{{ fields.dropdownField(
+    'Computer',
+    'items_id',
+    '',
+    __('Add a computer')
+) }}
+
 // Pied de page GLPI
 Html::footer();

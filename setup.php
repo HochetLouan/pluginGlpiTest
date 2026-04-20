@@ -53,10 +53,10 @@ function plugin_init_test(): void {
     global $PLUGIN_HOOKS;
     $PLUGIN_HOOKS['csrf_compliant']['test'] = true;
 
-    \Plugin::registerClass(Superasset::class);
-    Plugin::registerClass(GlpiPlugin\Test\Superasset_Item::class, [
-        'addtabon' => Computer::class
-    ]);
+    // \Plugin::registerClass(Superasset::class);
+    // \Plugin::registerClass(GlpiPlugin\Test\Superasset_Item::class, [
+    //     // 'addtabon' => Computer::class
+    // ]);
 
     $PLUGIN_HOOKS['menu_toadd']['test'] = [
         // insert into 'plugin menu'
