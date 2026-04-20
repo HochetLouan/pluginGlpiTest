@@ -1,3 +1,49 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+<div class="container">
+    <form action="/plugins/test/front/superasset.form.php" method="post">
+        <input type="hidden" name="plugin_test_superassets_id" value="{{ superasset.fields['id'] }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
 
-example content
+        <div class="card p-3">
+            <h4 class="mb-3">{{ __('Add a computer', 'test') }}</h4>
+            
+            <div class="mb-3">
+                {{ call('Computer::dropdown', [{
+                    'name': 'items_id',
+                    'display': false
+                }])|raw }}
+            </div>
+
+            <button type="submit" name="add_item" class="btn btn-primary">
+                <i class="fas fa-plus"></i> {{ _x('button', 'Add') }}
+            </button>
+        </div>
+    </form>
+
+    <hr>
+
+    <div class="mt-4">
+        <h3>{{ __('Linked Computers', 'test') }}</h3>
+        <table class="tab_cadre_fixe">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>{{ __('Itemtype') }}</th>
+                    <th>{{ __('Item ID') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for link in items %}
+                    <tr class="tab_bg_1">
+                        <td>{{ link.id }}</td>
+                        <td>{{ link.itemtype }}</td>
+                        <td>{{ link.items_id }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">{{ __('No items linked yet', 'test') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
