@@ -1,0 +1,52 @@
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="asset-form-container">
+    <form action="{{ _php_self }}" method="post">
+        {# Le jeton CSRF pour la sécurité (indispensable en POST) #}
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        
+        {# L'ID de ton superasset pour savoir à qui on lie l'ordi #}
+        <input type="hidden" name="superassets_id" value="{{ item.fields.id }}">
+
+        <div class="card">
+            <div class="card-body">
+                {{ fields.dropdownField(
+                    'Computer',
+                    'items_id',
+                    '',
+                    __('Add a computer')) 
+                }}
+            </div>
+            <div class="card-footer">
+                <button type="submit" name="add" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> {{ __('Add') }}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+
+    {# Affichage de la liste sous le formulaire #}
+    <h3>{{ __('Associated computers') }}</h3>
+    <table class="table card-table table-hover">
+        <thead>
+            <tr>
+                <th>{{ __('Name') }}</th>
+                <th>{{ __('ID') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for computer in computers %}
+                <tr>
+                    <td>{{ computer.name }}</td>
+                    <td>{{ computer.id }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2" class="text-center">{{ __('No items associated') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

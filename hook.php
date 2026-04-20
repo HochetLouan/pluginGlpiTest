@@ -36,7 +36,7 @@ function plugin_test_install(): bool
     if (!$DB->tableExists($table)) {
         $query = "CREATE TABLE `$table` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `plugin_test_superassets_id` INT(11) NOT NULL DEFAULT '0',
+                    `plugin_test_superassets_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
                     `itemtype` VARCHAR(100) NOT NULL,
                     `items_id` INT(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY  (`id`)
@@ -44,6 +44,7 @@ function plugin_test_install(): bool
                  DEFAULT CHARSET={$default_charset}
                  COLLATE={$default_collation}";
         $DB->doQuery($query);
+        //die($table);
     }
     //die($table);
 
