@@ -134,7 +134,7 @@ class Superasset extends CommonDBTM
             'id'           => 3,
             'table'        => Superasset_Item::getTable(),
             'field'        => 'id',
-            'name'         => __('Number of associated assets', 'myplugin'),
+            'name'         => __('Number of associated assets', 'test'),
             'datatype'     => 'count',
             'forcegroupby' => true,
             'usehaving'    => true,
