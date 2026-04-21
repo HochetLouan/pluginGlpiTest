@@ -31,11 +31,11 @@ if (isset($_POST["add"])) {
     
 }else if (isset($_POST["add_item"])) {
     $item_link = new \GlpiPlugin\Test\Superasset_Item();
-    if (isset($_POST['items_id'], $_POST['plugin_test_superassets_id']) && $_POST['items_id'] > 0) {
+    if (isset($_POST['items_id_2'], $_POST['itemtype_1'])) {
         $item_link->add([
-            'plugin_test_superassets_id' => $_POST['plugin_test_superassets_id'],
-            'itemtype' => $_POST['itemtype'] ?? 'Computer',
-            'items_id' => $_POST['items_id']
+            'items_id_1' => $_POST['items_id_1'],
+            'itemtype_2' => $item_link::$itemtype_1 ?? 'Computer',
+            'items_id_2' => $_POST['items_id_2']
         ]);
     } else {
         Session::addMessageAfterRedirect("Please select an item to add.", false, ERROR);

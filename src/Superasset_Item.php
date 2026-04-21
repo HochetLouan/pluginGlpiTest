@@ -9,11 +9,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Superasset_Item extends CommonDBRelation
 {
-    // Définition précise des relations pour CommonDBRelation
-    // static public $itemtype_primary   = Superasset::class;
-    // static public $items_id_primary   = 'plugin_test_superassets_id';
-    // static public $itemtype_secondary = 'itemtype';
-    // static public $items_id_secondary = 'items_id';
+    static public $itemtype_1 = "itemtype_computer";
 
     /**
      * Indique à GLPI de vérifier les droits sur l'objet parent
@@ -67,6 +63,12 @@ class Superasset_Item extends CommonDBRelation
             'items'      => iterator_to_array($iterator),
         ]);
     }
+
+    // public static function addInDB($data) {
+    //     global $DB;
+    //     $table = self::getTable();
+        
+    // }
 
     public static function showForComputer(Computer $computer)
     {

@@ -2,22 +2,35 @@
 {% block more_fields %}
 	brrrrrrrr superasset_item.html
 {% endblock %}
-{% block form %}
-	{{ fields.dropdownField(
-    'Computer',
-    'items_id',
-    '',
-    __('Add a computer')
-    ) }}
-	{{ fields.hiddenField(
-    "_glpi_csrf_token", csrf_token()
-    ) }}
-{% endblock %}
+<form method="post" action="">
+    {% block form %}
+        {{ fields.dropdownField(
+            'Computer',
+            'items_id_2',
+            '',
+            __('Add a computer')
+        ) }}
 
-<button type="submit" name="add_item" class="btn btn-primary">
-	<i class="fas fa-plus"></i>
-	{{ _x('button', 'Add') }}
-</button>
+        {{ fields.hiddenField(
+            "_glpi_csrf_token", csrf_token()
+        ) }}
+        {{ fields.hiddenField(
+            "itemtype_1", "PluginTestSuperasset"
+        ) }}
+
+        {{ fields.hiddenField(
+            "items_id_1", superasset.getID()
+        ) }}
+        {{ fields.hiddenField(
+            "itemtype_2", "Computer"
+        ) }}
+
+        <button type="submit" name="add_item">
+            {{ __('Add item') }}
+        </button>
+    {% endblock %}
+</form>
+
 {# 
 <div class="container">
     <form action="/plugins/test/front/superasset.form.php" method="post">

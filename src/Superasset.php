@@ -23,8 +23,7 @@ class Superasset extends CommonDBTM
     function showForm($ID, $options=[])
     {
         $this->initForm($ID, $options);
-        $this->showFormButtons($options);
-        // // @myplugin is a shortcut to the **templates** directory of your plugin
+        // @myplugin is a shortcut to the **templates** directory of your plugin
         TemplateRenderer::getInstance()->display('@test/superasset.form.html.twig', [
             'item'   => $this,
             'params' => $options,
