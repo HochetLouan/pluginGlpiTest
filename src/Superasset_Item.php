@@ -81,6 +81,30 @@ class Superasset_Item extends CommonDBTM
     public static function showForComputer(Computer $computer)
     {
         echo "<h3>Superassets liés</h3>";
-        // Optionnel : Ajoutez ici une logique de liste simple pour tester
+        global $DB;
+        $saTable = Superasset::getTable();
+        $saiTable = Superasset_Item::getTable();
+        $item_id = $computer->getID();
+        $iterator = $DB->request([
+            'SELECT' => ['*'],
+            'FROM'   => $saTable,
+            'INNER JOIN' => [
+                $saiTable => [
+                    'ON' => [
+                        $saiTable => 'plugin_test_superassets_id',
+                        $saTable  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                $saiTable.'.items_id' => $item_id
+            ]
+        ]);
+
+        $superassets = iterator_to_array($iterator);
+
+        TemplateRenderer::getInstance()->display('@test/computeurSuperasset.html.twig', [
+            'superassets' => $superassets,
+        ]);
     }
 }

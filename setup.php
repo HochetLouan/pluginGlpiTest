@@ -62,6 +62,9 @@ function plugin_init_test(): void {
         // insert into 'plugin menu'
         'plugins' => Superasset::class
     ];
+    Plugin::registerClass(GlpiPlugin\Test\Superasset_Item::class, [
+        'addtabon' => Computer::class
+    ]);
 
     /*$PLUGIN_HOOKS['menu_toadd']['tools'][] = [
         'title' => 'Test',

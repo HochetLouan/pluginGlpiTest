@@ -42,9 +42,7 @@ function plugin_test_install(): bool
                  DEFAULT CHARSET={$default_charset}
                  COLLATE={$default_collation}";
         $DB->doQuery($query);
-        //die($table);
     }
-    //die($table);
 
     //execute the whole migration
     $migration->executeMigration();
