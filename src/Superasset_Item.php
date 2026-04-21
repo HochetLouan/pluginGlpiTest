@@ -56,29 +56,8 @@ class Superasset_Item extends CommonDBRelation
 
     public static function showForSuperasset(Superasset $superasset)
     {
-        // global $CFG_GLPI;
-        // global $DB;
+        global $DB;
 
-        // echo "<form action='" . Superasset::getFormURL() . "' method='post'>";
-        // echo "<table class='tab_cadre_fixe'>";
-        // echo "<tr class='tab_bg_1'><td>";
-
-        // echo __('Add an item', 'test') . "&nbsp;";
-
-        // \Computer::dropdown(['name' => 'items_id',
-        //                     'display_emptychoice' => true,
-        //                     'emptylabel' => __('Select a computer')]);
-
-        // echo "<input type='hidden' name='itemtype' value='Computer'>";
-        // echo "<input type='hidden' name='plugin_test_superassets_id' value='" . $superasset->getID() . "'>";
-
-        // echo "<input type='submit' name='add_item' value='" . _sx('button', 'Add') . "' class='btn btn-primary'>";
-
-        // echo "</td></tr>";
-        // echo "</table>";
-        // \Html::closeForm();
-
-        
         $iterator = $DB->request(self::getTable(), [
             'WHERE' => ['plugin_test_superassets_id' => $superasset->getID()]
         ]);
