@@ -1,10 +1,8 @@
 <?php
 
 
-use DBConnection;
 use GlpiPlugin\Test\Superasset;
 use GlpiPlugin\Test\Superasset_Item;
-use Migration;
 
 
 function plugin_test_install(): bool
@@ -36,7 +34,7 @@ function plugin_test_install(): bool
     if (!$DB->tableExists($table)) {
         $query = "CREATE TABLE `$table` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `plugin_test_superassets_id` INT(11) NOT NULL DEFAULT '0',
+                    `plugin_test_superassets_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
                     `itemtype` VARCHAR(100) NOT NULL,
                     `items_id` INT(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY  (`id`)
@@ -44,6 +42,7 @@ function plugin_test_install(): bool
                  DEFAULT CHARSET={$default_charset}
                  COLLATE={$default_collation}";
         $DB->doQuery($query);
+        //die($table);
     }
     //die($table);
 
@@ -70,4 +69,32 @@ function plugin_test_uninstall(): bool
         }
     }
     return true;
+}
+
+
+function plugin_test_getAddSearchOptionsNew($itemtype)
+{
+    $sopt = [];
+
+    if ($itemtype == 'Computer') {
+        $sopt[] = [
+            'id'           => 12345,
+            'table'        => Superasset::getTable(),
+            'field'        => 'name',
+            'name'         => __('Associated Superassets', 'test'),
+            'datatype'     => 'itemlink',
+            'forcegroupby' => true,
+            'usehaving'    => true,
+            'joinparams'   => [
+                'beforejoin' => [
+                    'table'      => Superasset_Item::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'itemtype_item',
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    return $sopt;
 }

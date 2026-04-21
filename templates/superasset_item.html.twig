@@ -1,3 +1,54 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% block more_fields %}
+	brrrrrrrr superasset_item.html
+{% endblock %}
+<form method="post" action="">
+    {% block form %}
+        {{ fields.dropdownField(
+            'Computer',
+            'items_id',
+            '',
+            __('Add a computer')
+        ) }}
+
+        {{ fields.hiddenField(
+            "_glpi_csrf_token", csrf_token()
+        ) }}
+
+        {{ fields.hiddenField(
+            "plugin_test_superassets_id", superasset.getID()
+        ) }}
+
+        <button type="submit" name="add_item">
+            {{ __('Add item') }}
+        </button>
+    {% endblock %}
+</form>
+{% if items is not empty %}
+    <h3>Items liés</h3>
+    <table class="tab_cadre_fixe">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Itemtype</th>
+                <th>Item ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr class="tab_bg_1">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.itemtype }}</td>
+                    <td>{{ item.items_id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun item lié</p>
+{% endif %}
+
+{# 
 <div class="container">
     <form action="/plugins/test/front/superasset.form.php" method="post">
         <input type="hidden" name="plugin_test_superassets_id" value="{{ superasset.fields['id'] }}">
@@ -46,4 +97,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> #}

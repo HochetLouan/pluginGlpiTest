@@ -14,5 +14,7 @@ echo "<h1>Bienvenue dans mon plugin 🚀</h1>";
 echo "<p>Ceci est une page simple.</p>";
 echo "</div>";
 
+
+
 // Pied de page GLPI
 Html::footer();

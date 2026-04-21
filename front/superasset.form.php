@@ -30,15 +30,16 @@ if (isset($_POST["add"])) {
     \Html::back();
     
 }else if (isset($_POST["add_item"])) {
-
     $item_link = new \GlpiPlugin\Test\Superasset_Item();
-    $item_link->add([
+    if (isset($_POST['items_id'], $_POST['plugin_test_superassets_id'])) {
+        $item_link->add([
         'plugin_test_superassets_id' => $_POST['plugin_test_superassets_id'],
-        'itemtype'                   => 'Computer',
-        'items_id'                   => $_POST['items_id']
+        'itemtype' => $item_link::$itemtype_2,
+        'items_id' => $_POST['items_id']
     ]);
-    
-    // On retourne sur la fiche du Superasset
+    } else {
+        Session::addMessageAfterRedirect("Please select an item to add.", false, ERROR);
+    }
     Html::back();
 
 } else {

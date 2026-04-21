@@ -2,18 +2,14 @@
 
 namespace GlpiPlugin\Test;
 
-use CommonDBRelation;
+use CommonDBTM;
 use CommonGLPI;
 use Computer;
 use Glpi\Application\View\TemplateRenderer;
 
-class Superasset_Item extends CommonDBRelation
+class Superasset_Item extends CommonDBTM
 {
-    // Définition précise des relations pour CommonDBRelation
-    static public $itemtype_primary   = Superasset::class;
-    static public $items_id_primary   = 'plugin_test_superassets_id';
-    static public $itemtype_secondary = 'itemtype';
-    static public $items_id_secondary = 'items_id';
+    static public $itemtype_2 = "itemtype_computer";
 
     /**
      * Indique à GLPI de vérifier les droits sur l'objet parent
@@ -56,10 +52,8 @@ class Superasset_Item extends CommonDBRelation
 
     public static function showForSuperasset(Superasset $superasset)
     {
-        Computer::dropdown(['name' => 'items_id']);
         global $DB;
 
-        // Utilisation de request() au lieu de getIterator()
         $iterator = $DB->request(self::getTable(), [
             'WHERE' => ['plugin_test_superassets_id' => $superasset->getID()]
         ]);
@@ -68,6 +62,20 @@ class Superasset_Item extends CommonDBRelation
             'superasset' => $superasset,
             'items'      => iterator_to_array($iterator),
         ]);
+    }
+
+    public static function addInDB($data)
+    {
+        global $DB;
+        $table = self::getTable();
+        $DB->insert(
+            $table,
+            [
+                'plugin_test_superassets_id' => $data["items_id_1"],
+                'itemtype' => $data["itemtype_2"],
+                'items_id' => $data["items_id_2"],
+            ]
+        );
     }
 
     public static function showForComputer(Computer $computer)
