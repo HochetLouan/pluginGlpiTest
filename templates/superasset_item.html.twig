@@ -6,7 +6,7 @@
     {% block form %}
         {{ fields.dropdownField(
             'Computer',
-            'items_id_2',
+            'items_id',
             '',
             __('Add a computer')
         ) }}
@@ -14,15 +14,9 @@
         {{ fields.hiddenField(
             "_glpi_csrf_token", csrf_token()
         ) }}
-        {{ fields.hiddenField(
-            "itemtype_1", "PluginTestSuperasset"
-        ) }}
 
         {{ fields.hiddenField(
-            "items_id_1", superasset.getID()
-        ) }}
-        {{ fields.hiddenField(
-            "itemtype_2", "Computer"
+            "plugin_test_superassets_id", superasset.getID()
         ) }}
 
         <button type="submit" name="add_item">
@@ -30,6 +24,29 @@
         </button>
     {% endblock %}
 </form>
+{% if items is not empty %}
+    <h3>Items liés</h3>
+    <table class="tab_cadre_fixe">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Itemtype</th>
+                <th>Item ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr class="tab_bg_1">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.itemtype }}</td>
+                    <td>{{ item.items_id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun item lié</p>
+{% endif %}
 
 {# 
 <div class="container">

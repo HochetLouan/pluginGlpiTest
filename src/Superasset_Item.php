@@ -2,14 +2,14 @@
 
 namespace GlpiPlugin\Test;
 
-use CommonDBRelation;
+use CommonDBTM;
 use CommonGLPI;
 use Computer;
 use Glpi\Application\View\TemplateRenderer;
 
-class Superasset_Item extends CommonDBRelation
+class Superasset_Item extends CommonDBTM
 {
-    static public $itemtype_1 = "itemtype_computer";
+    static public $itemtype_2 = "itemtype_computer";
 
     /**
      * Indique à GLPI de vérifier les droits sur l'objet parent
@@ -64,11 +64,19 @@ class Superasset_Item extends CommonDBRelation
         ]);
     }
 
-    // public static function addInDB($data) {
-    //     global $DB;
-    //     $table = self::getTable();
-        
-    // }
+    public static function addInDB($data)
+    {
+        global $DB;
+        $table = self::getTable();
+        $DB->insert(
+            $table,
+            [
+                'plugin_test_superassets_id' => $data["items_id_1"],
+                'itemtype' => $data["itemtype_2"],
+                'items_id' => $data["items_id_2"],
+            ]
+        );
+    }
 
     public static function showForComputer(Computer $computer)
     {
