@@ -9,7 +9,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Superasset_Item extends CommonDBTM
 {
-    static public $itemtype_2 = "itemtype_computer";
+    // static public $itemtype_2 = "itemtype_computer";
 
     /**
      * Indique à GLPI de vérifier les droits sur l'objet parent

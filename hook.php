@@ -44,8 +44,32 @@ function plugin_test_install(): bool
         $DB->doQuery($query);
     }
 
-    //execute the whole migration
     $migration->executeMigration();
+
+    // $itemtype = 'GlpiPlugin\Test\Superasset';
+
+    // $query = [
+    //     'SELECT' => 'id',
+    //     'FROM'   => 'glpi_displaypreferences',
+    //     'WHERE'  => ['itemtype' => $itemtype]
+    // ];
+    // $iterator = $DB->request($query);
+
+    // if (count($iterator) == 0) {
+    //     $DB->insert('glpi_displaypreferences', [
+    //         'itemtype' => $itemtype,
+    //         'num'      => 1,
+    //         'rank'     => 1,
+    //         'users_id' => 0
+    //     ]);
+
+    //     $DB->insert('glpi_displaypreferences', [
+    //         'itemtype' => $itemtype,
+    //         'num'      => 2,
+    //         'rank'     => 2,
+    //         'users_id' => 0
+    //     ]);
+    // }
 
     return true;
 }
@@ -66,8 +90,15 @@ function plugin_test_uninstall(): bool
             );
         }
     }
+    $DB->delete(
+        'glpi_displaypreferences',
+        [
+            'itemtype' => 'GlpiPlugin\Test\Superasset'
+        ]
+    );
     return true;
 }
+
 
 
 function plugin_test_getAddSearchOptionsNew($itemtype)
@@ -76,7 +107,7 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
 
     if ($itemtype == 'Computer') {
         $sopt[] = [
-            'id'           => 12345,
+            'id'           => 1001,
             'table'        => Superasset::getTable(),
             'field'        => 'name',
             'name'         => __('Associated Superassets', 'test'),
@@ -85,9 +116,9 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
             'usehaving'    => true,
             'joinparams'   => [
                 'beforejoin' => [
-                    'table'      => Superasset_Item::getTable(),
+                    'table' => Superasset_Item::getTable(),
                     'joinparams' => [
-                        'jointype' => 'itemtype_item',
+                        'jointype' => 'itemtype_item'
                     ]
                 ]
             ]
@@ -96,3 +127,4 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
 
     return $sopt;
 }
+
