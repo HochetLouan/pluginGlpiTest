@@ -33,6 +33,7 @@
 
 use GlpiPlugin\Test\Superasset;
 use GlpiPlugin\Test\Superasset_Item;
+use Computer;
 
 /** @phpstan-ignore theCodingMachineSafe.function (safe to assume this isn't already defined) */
 define('PLUGIN_TEST_VERSION', '1.00');
@@ -49,7 +50,8 @@ define("PLUGIN_TEST_MAX_GLPI_VERSION", "11.0.99");
  * Init hooks of the plugin.
  * REQUIRED
  */
-function plugin_init_test(): void {
+function plugin_init_test(): void
+{
     global $PLUGIN_HOOKS;
     $PLUGIN_HOOKS['csrf_compliant']['test'] = true;
 
@@ -59,7 +61,24 @@ function plugin_init_test(): void {
     Plugin::registerClass(GlpiPlugin\Test\Superasset_Item::class, [
         'addtabon' => Computer::class
     ]);
+    $PLUGIN_HOOKS['item_purge']['test'] = [
+        'Computer' => [Superasset_Item::class, 'cleanForComputer']
+    ];
+    $PLUGIN_HOOKS['menu_item']['test'] = 'config.form.php';
+    $PLUGIN_HOOKS['config_page']['test'] = 'config.form.php';
+    if (strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false) {
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['test'][] = 'js/ticket.js';
+    }
 
+    //$PLUGIN_HOOKS[Hooks::ADD_CSS]['test'] = 'myplugin.css';
+
+    // on ticket page (in edition)
+    if (
+        strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
+        && isset($_GET['id'])
+    ) {
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['test'][] = 'js/ticket.js.php';
+    }
 }
 
 /**

@@ -46,31 +46,6 @@ function plugin_test_install(): bool
 
     $migration->executeMigration();
 
-    // $itemtype = 'GlpiPlugin\Test\Superasset';
-
-    // $query = [
-    //     'SELECT' => 'id',
-    //     'FROM'   => 'glpi_displaypreferences',
-    //     'WHERE'  => ['itemtype' => $itemtype]
-    // ];
-    // $iterator = $DB->request($query);
-
-    // if (count($iterator) == 0) {
-    //     $DB->insert('glpi_displaypreferences', [
-    //         'itemtype' => $itemtype,
-    //         'num'      => 1,
-    //         'rank'     => 1,
-    //         'users_id' => 0
-    //     ]);
-
-    //     $DB->insert('glpi_displaypreferences', [
-    //         'itemtype' => $itemtype,
-    //         'num'      => 2,
-    //         'rank'     => 2,
-    //         'users_id' => 0
-    //     ]);
-    // }
-
     return true;
 }
 

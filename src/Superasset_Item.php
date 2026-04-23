@@ -97,7 +97,7 @@ class Superasset_Item extends CommonDBTM
                 ]
             ],
             'WHERE' => [
-                $saiTable.'.items_id' => $item_id
+                $saiTable . '.items_id' => $item_id
             ]
         ]);
 
@@ -105,6 +105,16 @@ class Superasset_Item extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('@test/computeurSuperasset.html.twig', [
             'superassets' => $superassets,
+        ]);
+    }
+
+    static function cleanForComputer(CommonDBTM $item)
+    {
+        $link = new self();
+
+        $link->deleteByCriteria([
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID()
         ]);
     }
 }
