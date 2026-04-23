@@ -6,6 +6,7 @@ use CommonDBTM;
 use Notepad;
 use Log;
 use Session;
+use Computer;
 use Glpi\Application\View\TemplateRenderer;
 
 class Superasset extends CommonDBTM
@@ -165,5 +166,33 @@ class Superasset extends CommonDBTM
         return true;
     }
 
-    
+    static function preItemFormComputer(array $params)
+    {
+        $item = $params['item'];
+        if (!($item instanceof Computer) || $item->isNewItem()) {
+            return;
+        }
+
+        $superassetItem = new Superasset_Item();
+        $count = countElementsInTable(
+            $superassetItem->getTable(),
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $item->getID()
+            ]
+        );
+
+        // 2. Construire le lien vers l'onglet spécifique
+        // Le paramètre forcetab permet d'ouvrir directement l'onglet du plugin
+        $tabClass = \GlpiPlugin\Test\Superasset_Item::class;
+        $url = $item->getFormURLWithID($item->getID()) . "&forcetab=" . urlencode($tabClass) . "$1";
+
+        // 3. Affichage HTML
+        echo "<div class='center mb-2'>";
+        echo "<a href='$url' class='v-align-middle'>";
+        echo "<i class='ti ti-package me-1'></i>"; // Icône Tabler
+        echo "Nombre de Superassets associés : <span class='badge bg-blue-lt'>$count</span>";
+        echo "</a>";
+        echo "</div>";
+    }
 }
