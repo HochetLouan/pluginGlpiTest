@@ -42,11 +42,8 @@ function plugin_test_install(): bool
                  DEFAULT CHARSET={$default_charset}
                  COLLATE={$default_collation}";
         $DB->doQuery($query);
-        //die($table);
     }
-    //die($table);
 
-    //execute the whole migration
     $migration->executeMigration();
 
     return true;
@@ -68,8 +65,15 @@ function plugin_test_uninstall(): bool
             );
         }
     }
+    $DB->delete(
+        'glpi_displaypreferences',
+        [
+            'itemtype' => 'GlpiPlugin\Test\Superasset'
+        ]
+    );
     return true;
 }
+
 
 
 function plugin_test_getAddSearchOptionsNew($itemtype)
@@ -78,7 +82,7 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
 
     if ($itemtype == 'Computer') {
         $sopt[] = [
-            'id'           => 12345,
+            'id'           => 1001,
             'table'        => Superasset::getTable(),
             'field'        => 'name',
             'name'         => __('Associated Superassets', 'test'),
@@ -87,9 +91,9 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
             'usehaving'    => true,
             'joinparams'   => [
                 'beforejoin' => [
-                    'table'      => Superasset_Item::getTable(),
+                    'table' => Superasset_Item::getTable(),
                     'joinparams' => [
-                        'jointype' => 'itemtype_item',
+                        'jointype' => 'itemtype_item'
                     ]
                 ]
             ]
@@ -98,3 +102,4 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
 
     return $sopt;
 }
+

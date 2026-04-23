@@ -34,7 +34,7 @@ if (isset($_POST["add"])) {
     if (isset($_POST['items_id'], $_POST['plugin_test_superassets_id'])) {
         $item_link->add([
         'plugin_test_superassets_id' => $_POST['plugin_test_superassets_id'],
-        'itemtype' => $item_link::$itemtype_2,
+        'itemtype' => 'Computer',
         'items_id' => $_POST['items_id']
     ]);
     } else {

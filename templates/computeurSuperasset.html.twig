@@ -1,0 +1,21 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% if superassets is not empty %}
+    <table class="tab_cadre_fixe">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for superasset in superassets %}
+                <tr class="tab_bg_1">
+                    <td>{{ superasset.id }}</td>
+                    <td>{{ superasset.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun superasset lié</p>
+{% endif %}

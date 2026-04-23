@@ -1,9 +1,12 @@
 <?php
+
 namespace GlpiPlugin\Test;
 
 use CommonDBTM;
 use Notepad;
 use Log;
+use Session;
+use Computer;
 use Glpi\Application\View\TemplateRenderer;
 
 class Superasset extends CommonDBTM
@@ -15,12 +18,12 @@ class Superasset extends CommonDBTM
     /**
      *  Name of the itemtype
      */
-    static function getTypeName($nb=0)
+    static function getTypeName($nb = 0)
     {
         return _n('Super-asset', 'Super-assets', $nb);
     }
 
-    function showForm($ID, $options=[])
+    function showForm($ID, $options = [])
     {
         $this->initForm($ID, $options);
         // @myplugin is a shortcut to the **templates** directory of your plugin
@@ -28,7 +31,7 @@ class Superasset extends CommonDBTM
             'item'   => $this,
             'params' => $options,
         ]);
-        
+
 
         return true;
     }
@@ -41,7 +44,7 @@ class Superasset extends CommonDBTM
     static function getMenuContent()
     {
         // Ajoutez un backslash devant Session si vous n'avez pas de "use Session;" en haut
-        $title  = self::getMenuName(\Session::getPluralNumber()); 
+        $title  = self::getMenuName(\Session::getPluralNumber());
         $search = self::getSearchURL();
         $form   = self::getFormURL();
 
@@ -75,75 +78,121 @@ class Superasset extends CommonDBTM
         return $tabs;
     }
 
-    /* public function display($options = []) {
+    function rawSearchOptions()
+    {
+        $options = [];
+
+        $options[] = [
+            'id'   => 'common',
+            'name' => __('Characteristics')
+        ];
+
+        $options[] = [
+            'id'    => 1,
+            'table' => self::getTable(),
+            'field' => 'name',
+            'name'  => __('Name'),
+            'datatype' => 'itemlink'
+        ];
+
+        $options[] = [
+            'id'    => 2,
+            'table' => self::getTable(),
+            'field' => 'id',
+            'name'  => __('ID')
+        ];
+
+        $options[] = [
+            'id'           => 3,
+            'table'        => Superasset_Item::getTable(),
+            'field'        => 'id',
+            'name'         => __('Number of associated assets', 'test'),
+            'datatype'     => 'count',
+            'forcegroupby' => true,
+            'usehaving'    => true,
+            'joinparams'   => [
+                'jointype' => 'child',
+            ]
+        ];
+
+        return $options;
+    }
+    //checks
+
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['name']) || empty($input['name'])) {
+            Session::addMessageAfterRedirect(__("Le nom est obligatoire"), false, ERROR);
+            return false;
+        }
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (!isset($input['name']) || empty($input['name'])) {
+            Session::addMessageAfterRedirect(__("Le nom est obligatoire"), false, ERROR);
+            return false;
+        }
+        return $input;
+    }
+
+    public function cleanDBonItemDelete()
+    {
         global $DB;
 
-        // 1. On récupère les données de l'objet actuel s'il existe
-        $this->getFromDB($options['id']);
+        $link_item = new Superasset_Item();
 
-        // 2. On récupère la liste des ordinateurs déjà associés 
-        // (Exemple : si ta table a un champ 'superassets_id')
-        $iterator = $DB->request([
-            'SELECT'    => ['glpi_computers.name', 'glpi_computers.id'],
-            'FROM'      => 'glpi_computers',
-            'INNER JOIN' => [
-                'glpi_plugin_test_superassets_items' => [ // Ta table de liaison
-                    'ON' => [
-                        'glpi_plugin_test_superassets_items' => 'items_id',
-                        'glpi_computers'                      => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => ['glpi_plugin_test_superassets_items.plugin_test_superassets_id' => $options['id']]
-        ]);
+        $DB->delete(
+            $link_item->getTable(),
+            [
+                'plugin_test_superassets_id' => $this->fields['id']
+            ]
+        );
+    }
 
-        $associated_computers = iterator_to_array($iterator);
-
-        // 3. On envoie tout au template Twig
-        TemplateRenderer::getInstance()->display('@test/superasset_form.html.twig', [
-            'item'   => $this,
-            'computers' => $associated_computers
-        ]);
-    } */
+    public function post_purgeItem()
+    {
+        global $DB;
+        $link_item = new Superasset_Item();
 
 
-    // function rawSearchOptions()
-    // {
-    //     $options = [];
+        $DB->delete(
+            $link_item->getTable(),
+            [
+                'plugin_test_superassets_id' => $this->fields['id']
+            ]
+        );
+        return true;
+    }
 
-    //     $options[] = [
-    //         'id'   => 'common',
-    //         'name' => __('Characteristics')
-    //     ];
+    static function preItemFormComputer(array $params)
+    {
+        $item = $params['item'];
+        if (!($item instanceof Computer) || $item->isNewItem()) {
+            return;
+        }
 
-    //     $options[] = [
-    //         'id'    => 1,
-    //         'table' => self::getTable(),
-    //         'field' => 'name',
-    //         'name'  => __('Name'),
-    //         'datatype' => 'itemlink'
-    //     ];
+        $superassetItem = new Superasset_Item();
+        $count = countElementsInTable(
+            $superassetItem->getTable(),
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $item->getID()
+            ]
+        );
 
-    //     $options[] = [
-    //         'id'    => 2,
-    //         'table' => self::getTable(),
-    //         'field' => 'id',
-    //         'name'  => __('ID')
-    //     ];
+        // 2. Construire le lien vers l'onglet spécifique
+        // Le paramètre forcetab permet d'ouvrir directement l'onglet du plugin
+        $tabClass = \GlpiPlugin\Test\Superasset_Item::class;
+        $url = $item->getFormURLWithID($item->getID()) . "&forcetab=" . urlencode($tabClass) . "$1";
 
-    //     // $options[] = [
-    //     //     'id'           => 3,
-    //     //     'table'        => Superasset_Item::getTable(),
-    //     //     'field'        => 'id',
-    //     //     'name'         => __('Number of associated assets', 'test'),
-    //     //     'datatype'     => 'count',
-    //     //     'forcegroupby' => true,
-    //     //     'usehaving'    => true,
-    //     //     'joinparams'   => [
-    //     //         'jointype' => 'child',
-    //     //     ]
-    //     // ];
-
-    //     return $options;
-    // }
+        // 3. Affichage HTML
+        echo "<div class='center mb-2'>";
+        echo "<a href='$url' class='v-align-middle'>";
+        echo "<i class='ti ti-package me-1'></i>"; // Icône Tabler
+        echo "Nombre de Superassets associés : <span class='badge bg-blue-lt'>$count</span>";
+        echo "</a>";
+        echo "</div>";
+    }
 }
