@@ -79,6 +79,8 @@ function plugin_init_test(): void
     Plugin::registerClass(test_Profile::class, [
         'addtabon' => Profile::class
     ]);
+
+    $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['test'] = true;
     // $PLUGIN_HOOKS['menu_item']['test'] = 'config.form.php';
     // $PLUGIN_HOOKS['config_page']['test'] = 'config.form.php';
 
