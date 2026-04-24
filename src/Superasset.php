@@ -3,11 +3,13 @@
 namespace GlpiPlugin\Test;
 
 use CommonDBTM;
+use Html;
 use Notepad;
 use Log;
 use Session;
 use Computer;
 use Glpi\Application\View\TemplateRenderer;
+use MassiveAction;
 
 class Superasset extends CommonDBTM
 {
@@ -194,5 +196,84 @@ class Superasset extends CommonDBTM
         echo "Nombre de Superassets associés : <span class='badge bg-blue-lt'>$count</span>";
         echo "</a>";
         echo "</div>";
+    }
+
+    //Massive Actions method
+
+    function getSpecificMassiveActions($checkitem = NULL)
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        // add a single massive action
+        $class        = __CLASS__;
+        $action_key   = "link_computer";
+        $action_label = __("Link to a computer", 'test');
+        $actions[$class . MassiveAction::CLASS_ACTION_SEPARATOR . $action_key] = $action_label;
+
+        return $actions;
+    }
+
+    static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        switch ($ma->getAction()) {
+            case 'link_computer':
+                // 1. On affiche nos éléments dans des colonnes de tableau
+                echo "<td>" . __("Select a computer", 'test') . "</td>";
+                echo "<td>";
+                Computer::dropdown([
+                    'name'  => 'items_id',
+                    'value' => 0
+                ]);
+                echo "</td>";
+
+                echo "<td>";
+                echo Html::submit(_x('button', 'Post'), [
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-primary'
+                ]);
+                echo "</td>";
+
+                // 2. TRÈS IMPORTANT : On retourne true ici.
+                // Cela dit à GLPI : "J'ai fini l'affichage, ne cherche pas d'autres formulaires"
+                return true;
+        }
+
+        // 3. On n'appelle le parent QUE si ce n'est pas notre action
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        switch ($ma->getAction()) {
+            case 'link_computer':
+                $input = $ma->getInput();
+
+                if (!isset($input['items_id']) || $input['items_id'] <= 0) {
+                    $ma->addMessage(__("No computer selected", 'test'));
+                    return;
+                }
+
+                $link = new Superasset_Item();
+
+                foreach ($ids as $id) {
+                    $link_data = [
+                        'plugin_test_superassets_id' => $id,
+                        'itemtype'                   => 'Computer',
+                        'items_id'                   => $input['items_id']
+                    ];
+
+                    if ($link->add($link_data)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    }
+                }
+                return;
+        }
+
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }
