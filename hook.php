@@ -4,6 +4,9 @@
 use GlpiPlugin\Test\Superasset;
 use GlpiPlugin\Test\Superasset_Item;
 
+use GlpiPlugin\Test\Profile as test_Profile;
+use ProfileRight;
+
 
 function plugin_test_install(): bool
 {
@@ -46,6 +49,10 @@ function plugin_test_install(): bool
 
     $migration->executeMigration();
 
+    foreach (test_Profile::getAllRights() as $right) {
+        ProfileRight::addProfileRights([$right['field']]);
+    }
+
     return true;
 }
 
@@ -71,6 +78,10 @@ function plugin_test_uninstall(): bool
             'itemtype' => 'GlpiPlugin\Test\Superasset'
         ]
     );
+
+    foreach (test_Profile::getAllRights() as $right) {
+        ProfileRight::deleteProfileRights([$right['field']]);
+    }
     return true;
 }
 
@@ -102,4 +113,3 @@ function plugin_test_getAddSearchOptionsNew($itemtype)
 
     return $sopt;
 }
-
